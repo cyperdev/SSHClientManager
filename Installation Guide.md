@@ -100,3 +100,9 @@ pip install -r requirements.txt
     - Alternatively, copy the URL shown in the terminal and visit it manually to authenticate.
 	    ![Screenshot](Images/google19.png)
     - Once authentication is completed, the `token.json` file will be automatically downloaded into the `.ssh_client_manager` folder.
+
+---
+## Run the script
+```bash
+python SSHClientManager.py
+```
