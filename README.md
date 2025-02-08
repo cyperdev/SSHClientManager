@@ -54,3 +54,22 @@ This gap motivated me to **create my own solution**—an **SSH Client Manager** 
 ✅ **An open-source, completely free solution**, offering reliable and secure management for developers, system administrators, and security professionals.
 
 By creating this tool, I sought to bridge the gap between **security** and **convenience**, ensuring that SSH credential management is **safe**, **efficient**, and **flexible**—without the limitations of paid alternatives.
+
+---
+## **Licensing Flexibility**
+While this project is licensed under the GNU Affero General Public License (AGPL) v3.0, I am open to discussions for commercial licensing or special use cases. If you are interested in using this software in a commercial environment or need to modify it for proprietary use, please contact me directly to explore available options. This flexibility ensures that both individual users and organizations can benefit from the tool while maintaining the integrity and open-source nature of the project.
+
+---
+## **Disclaimer**
+This software is provided "as-is," without any warranty of any kind, either express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, or non-infringement. In no event shall the author or contributors be held liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+
+By using this software, you agree to take full responsibility for any consequences that may arise from its use, including any potential security, performance, or operational issues. Please use this tool in compliance with all relevant laws and regulations in your jurisdiction.
+
+---
+## Contact Information
+
+For any inquiries related to commercial licensing, special use cases, or general questions, please feel free to contact me at:
+
+- LinkedIn: [https://www.linkedin.com/in/mohamedazarudheen/]
+  
+I am open to discussions and look forward to collaborating with you!
