@@ -31,11 +31,11 @@ pip install -r requirements.txt
 2. **Create an App**:
     - Go to [Dropbox App Console](https://www.dropbox.com/developers/apps).
     - Click **"Create App"**.
-		![Screenshot](images/dropbox1.png)
+		![Screenshot](Images/dropbox1.png)
     - Choose **Scoped Access**.
     - Select **App Folder** – access is limited to a single folder created for your app.
     - Name the app: `ssh_client_manager`.
-	    ![[images/dropbox2.png]]
+	    ![[Images/dropbox2.png]]
 3. **Set Permissions**:
     - Navigate to **Permissions** under **Files and Folders**.
     - Enable:
