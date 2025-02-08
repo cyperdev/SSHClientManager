@@ -53,13 +53,13 @@ pip install -r requirements.txt
 
 ## **3. Google Drive Integration Setup**
 
-5. **Go to Google Cloud Console** at [Google Cloud Console](https://console.cloud.google.com/).
-6. **Create a New Project**:
+1. **Go to Google Cloud Console** at [Google Cloud Console](https://console.cloud.google.com/).
+2. **Create a New Project**:
     - Click **Select a project ➝ New Project ➝ Create**.
 	    ![Screenshot](Images/google1.png)
     - Name it **DriveAPI**.
 	    ![Screenshot](Images/google2.png)
-7. **Enable Google Drive API**:
+3. **Enable Google Drive API**:
     - Under **APIs & Services**, select **Enable APIs and Services**.
 	    ![Screenshot](Images/google3.png)
     - Click **ENABLE APIS AND SERVICES**
@@ -67,7 +67,7 @@ pip install -r requirements.txt
     - Under **Google Workspace**, search for **Google Drive API** and click **Enable**.
 	    ![Screenshot](Images/google5.png)
 	    ![Screenshot](Images/google6.png)
-8. **Set Up OAuth Consent Screen and Create OAuth Credentials**:
+4. **Set Up OAuth Consent Screen and Create OAuth Credentials**:
     - Navigate to **OAuth consent screen**.
 	    ![Screenshot](Images/google7.png)
     - Click **Get Started**.
@@ -88,13 +88,13 @@ pip install -r requirements.txt
 		![Screenshot](Images/google15.png)
     - Under **Publishing Status**, click **Publish App**.
 	    ![Screenshot](Images/google18.png)
-9. **Download and Save Credentials**:
+5. **Download and Save Credentials**:
     - Download the `client_secret_SOME_RANDOM_CHAR.json` file.
     - Rename it to `credentials.json` and move it to the `.ssh_client_manager` folder in your home directory.
 	    ![Screenshot](Images/google16 1.png)
 	    ![Screenshot](Images/google17.png)
     - _(If `.ssh_client_manager` is not found, simply run the application and exit; the folder will be created automatically.)_
-10. **Authenticate and Generate Token**:
+6. **Authenticate and Generate Token**:
     - Run the application; it will open a browser for authentication.
     - Alternatively, copy the URL shown in the terminal and visit it manually to authenticate.
 	    ![Screenshot](Images/google19.png)
