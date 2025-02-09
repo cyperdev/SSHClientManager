@@ -10,6 +10,7 @@ from google_drive_upload import *
 from file_encryption import *
 from drop_box_upload import *
 import os
+import signal
 
 class SSHClientManager:
     def __init__(self):
@@ -194,27 +195,75 @@ class SSHClientManager:
             channel = ssh.invoke_shell()
             print(f"Connected to {self.host}. Press Ctrl+C to interrupt commands, type 'exit' to quit.")
 
-            old_tty = termios.tcgetattr(sys.stdin)
+            fd = sys.stdin.fileno()
+            old_tty = termios.tcgetattr(fd)
+
+            # Get a new copy of terminal attributes
+            new_tty = termios.tcgetattr(fd)
+            # Disable ISIG (so Ctrl+C is not caught as SIGINT) and disable ECHO (so keystrokes aren’t printed locally)
+            new_tty[3] &= ~(termios.ISIG | termios.ECHO)
+
+            # Apply the new attributes
+            termios.tcsetattr(fd, termios.TCSADRAIN, new_tty)
+
+            # Set cbreak mode so characters are available immediately
+            tty.setcbreak(fd)
+
             try:
-                tty.setraw(sys.stdin)
-                tty.setcbreak(sys.stdin)
-                channel.settimeout(0.0)  # Non-blocking mode
+                user_command = ""
 
                 while True:
                     rlist, _, _ = select.select([sys.stdin, channel], [], [], 1)
-                    
+
                     # Handle user input
                     if sys.stdin in rlist:
                         char = sys.stdin.read(1)
-                        
+
                         if char == "\x03":  # Ctrl + C
                             channel.send("\x03")
-                        elif char == "\x1b":  # Start of an escape sequence (Arrow keys, etc.)
-                            seq = sys.stdin.read(2)  # Read next two bytes
-                            channel.send(f"\x1b{seq}")
+
+                        elif char == "\x1b":  # Escape sequence (Arrow keys, etc.)
+                            seq = sys.stdin.read(2)
+                            channel.send(f"\x1b{seq}")  # Send the escape sequence properly
+
+                            # Handle Arrow Keys specifically (up arrow or down arrow)
+                            if seq == "[A":  # Up arrow
+                                output = channel.recv(4096).decode()
+                                sys.stdout.write(output)
+                                sys.stdout.flush()
+                                c_output = clean_output(output)
+                                if c_output == "exit":
+                                    user_command = "exit" 
+                                elif c_output == "logout":
+                                    user_command = "logout"
+                                else:
+                                    user_command = ""
+
+                            elif seq == "[B":  # Down arrow
+                                output = channel.recv(4096).decode()
+                                sys.stdout.write(output)
+                                sys.stdout.flush()
+                                c_output = clean_output(output)
+                                if c_output == "exit":
+                                    user_command = "exit" 
+                                elif c_output == "logout":
+                                    user_command = "logout"
+                                else:
+                                    user_command = ""
                         else:
                             channel.send(char)
+                            user_command += char  # Append to user input buffer
+                        
+                        if char == "\n":
+                            if user_command.strip() == "exit" or user_command.strip() == "logout":
+                                output = channel.recv(4096).decode()
+                                sys.stdout.write(output)
+                                sys.stdout.write("\nLogout detected. Closing connection.\n")
+                                break
 
+                            user_command = ""
+                            
+                                
                     # Handle output from the SSH channel
                     if channel in rlist:
                         if channel.recv_ready():
@@ -222,21 +271,12 @@ class SSHClientManager:
                             sys.stdout.write(output)
                             sys.stdout.flush()
 
-                            # Check if output contains 'exit' or 'logout'
-                            if "exit" in output.lower() or "logout" in output.lower():
-                                print("Logout detected. Closing connection.")
-                                break
-
                         # Handle error messages from the server
                         while channel.recv_stderr_ready():
                             sys.stderr.write(channel.recv_stderr(4096).decode())
                             sys.stderr.flush()
-
             finally:
-                termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_tty)
-
-        except KeyboardInterrupt:
-            print("\nKeyboard Interrupt. Closing SSH session.")
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_tty)
         except Exception as e:
             print(f"Error: {e}")
         finally:
