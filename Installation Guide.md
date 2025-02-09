@@ -42,11 +42,21 @@ pip install -r requirements.txt
         - `files.content.write`
         - `files.content.read`
         ![Screenshot](Images/dropbox3.png)
-4. **Generate API Key**:
+4. **Get AUTH CODE and Oauth Refresh Token**:
     - Go back to **Settings**.
-    - Click **Generate** under OAuth2 access token.
-	    ![Screenshot](Images/dropbox4.png)
-    - Save the token in `drop_box_config.json` under the `.ssh_client_manager` folder in your home directory.
+      ![Screenshot](Images/dropbox4.png)
+    - Replace the APPKEY and Visit- https://www.dropbox.com/oauth2/authorize?client_id=APPKEYHERE&response_type=code&token_access_type=offline
+    - Copy the Auth Code
+      ![Screenshot](Images/dropbox5.png)
+        ```
+        curl https://api.dropbox.com/oauth2/token \
+	    -d code=AUTH_CODE \
+	    -d grant_type=authorization_code \
+	    -u APPKEYHERE:APPSECRETHERE​
+       ```
+    - Copy Refresh token ```refresh_token```
+      ![Screenshot](Images/dropbox6.png)
+    - Save the app_key, app_secret and refresh_token in `drop_box_config.json` under the `.ssh_client_manager` folder in your home directory.
     - _(If `.ssh_client_manager` is not found, simply run the application and exit; the folder will be created automatically.)_
 
 ---
