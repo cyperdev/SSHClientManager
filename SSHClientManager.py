@@ -172,7 +172,7 @@ class SSHClientManager:
         return False
 
     def interactive_ssh(self, save_choice):
-        """Starts an interactive SSH session."""
+        """Starts an interactive SSH session with proper arrow key support."""
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -198,25 +198,32 @@ class SSHClientManager:
             try:
                 tty.setraw(sys.stdin)
                 tty.setcbreak(sys.stdin)
+                channel.settimeout(0.0)  # Non-blocking mode
 
                 while True:
-                    # Check for data from the SSH channel
                     rlist, _, _ = select.select([sys.stdin, channel], [], [], 1)
-                    if sys.stdin in rlist:  # User input
+                    
+                    # Handle user input
+                    if sys.stdin in rlist:
                         char = sys.stdin.read(1)
+                        
                         if char == "\x03":  # Ctrl + C
                             channel.send("\x03")
+                        elif char == "\x1b":  # Start of an escape sequence (Arrow keys, etc.)
+                            seq = sys.stdin.read(2)  # Read next two bytes
+                            channel.send(f"\x1b{seq}")
                         else:
                             channel.send(char)
 
-                    if channel in rlist:  # Output from the channel
+                    # Handle output from the SSH channel
+                    if channel in rlist:
                         if channel.recv_ready():
                             output = channel.recv(4096).decode()
                             sys.stdout.write(output)
                             sys.stdout.flush()
 
-                            # Check if output is 'exit' or 'logout'
-                            if output.lower().strip() == "exit" or output.lower().strip() == "logout":
+                            # Check if output contains 'exit' or 'logout'
+                            if "exit" in output.lower() or "logout" in output.lower():
                                 print("Logout detected. Closing connection.")
                                 break
 
@@ -227,9 +234,9 @@ class SSHClientManager:
 
             finally:
                 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_tty)
-        
-        except KeyboardInterrupt as ke:
-            print(f"Key board interrupt found: {ke}")
+
+        except KeyboardInterrupt:
+            print("\nKeyboard Interrupt. Closing SSH session.")
         except Exception as e:
             print(f"Error: {e}")
         finally:
