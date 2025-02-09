@@ -74,11 +74,28 @@ def get_non_empty_input(prompt, default=None):
         else:
             print("This field cannot be empty. Please try again.")
 
-
 def is_valid_ip(host):
     """Validates if the provided host is a valid IP address."""
     # Regex pattern to check for valid IP address (IPv4 format)
     pattern = re.compile(r"^(?:\d{1,3}\.){3}\d{1,3}$")
     return bool(pattern.match(host))
+
+def clean_output(output):
+    # print(f"Output with escape characters: {repr(output)}")
+    
+    # Remove backspace characters
+    cleaned_output_1 = re.sub(r'\x08', '', output)
+    # Remove ANSI escape sequences
+    ansi_escape = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]')
+    cleaned_output_2 = ansi_escape.sub('', cleaned_output_1)
+    # Remove null bytes
+    cleaned_output_3 = re.sub(r'\x00', '', cleaned_output_2)
+    # Remove other control characters
+    control_escape = re.compile(r'[\x00-\x1F\x7F]')
+    cleaned_output_final = control_escape.sub('', cleaned_output_3)
+
+    # print(repr(cleaned_output_final))
+
+    return cleaned_output_final.strip()
 
 folder_path = create_directory_file()
