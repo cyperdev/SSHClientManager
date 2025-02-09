@@ -29,7 +29,10 @@ def create_directory_file():
         try:
             # Example data to write to the file (can be customized)
             drop_box_config_data = {
-                "token" : ""
+                "app_key" : "",
+                "app_secret" : "",
+                "refresh_token": ""
+
             }
             
             with open(file_path, 'w') as f:

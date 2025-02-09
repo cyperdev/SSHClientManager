@@ -10,7 +10,6 @@ from google_drive_upload import *
 from file_encryption import *
 from drop_box_upload import *
 import os
-import signal
 
 class SSHClientManager:
     def __init__(self):

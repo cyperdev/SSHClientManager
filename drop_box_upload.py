@@ -11,24 +11,22 @@ def load_drop_box_config():
     if os.path.exists(drop_box_path):
         with open(drop_box_path, 'r') as file:
             config_data = json.load(file)  # Load JSON data
-            token = config_data.get('token', '')  # Default to existing URL if not found
-            return token
+            app_key = config_data.get('app_key', '') 
+            app_secret = config_data.get('app_secret', '')
+            oauth2_refresh_token = config_data.get('refresh_token', '') 
+            return app_key, app_secret, oauth2_refresh_token
     else:
         raise FileNotFoundError(f"Config file not found at {drop_box_path}")
 
 # Authenticate and get session cookie
 def login_to_drop_box():
-    TOKEN = load_drop_box_config()
-
-    dbx = dropbox.Dropbox(TOKEN)
-
-    # Check that the access token is valid
-    try:
-        dbx.users_get_current_account()
-    except AuthError:
-        print("ERROR: Invalid access token; try re-generating an "
-            "access token from the app console on the web.")
-        dbx = None  # Correct error handling for invalid authentication
+    app_key, app_secret, oauth2_refresh_token = load_drop_box_config()
+    
+    dbx = dropbox.Dropbox(
+            app_key = app_key,
+            app_secret = app_secret,
+            oauth2_refresh_token = oauth2_refresh_token
+        )
 
     return dbx
 
@@ -57,4 +55,3 @@ def download_files_from_dropbox(file_names):
                 print(f"File {file_name} downloaded to {file_path}")
             else:
                 print(f"No matches found for {file_name}.")
-            
